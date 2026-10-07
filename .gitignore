@@ -1,0 +1,17 @@
+# Секреты
+.env
+
+# Окружение
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Логи и сгенерированные отчёты
+logs/
+reports/*.pdf
+
+# macOS
+.DS_Store

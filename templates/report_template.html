@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Отчёт по диалогу — {{ report.client_name }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 15mm 16mm 16mm 16mm;
+    @bottom-right {
+      content: "стр. " counter(page) " из " counter(pages);
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      font-size: 7.5pt;
+      color: #8a8f98;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "DejaVu Sans", Arial, "Helvetica Neue", sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.5;
+    color: #1d232b;
+  }
+
+  /* ---------- Шапка ---------- */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 9pt;
+    border-bottom: 2pt solid #1f4e79;
+    margin-bottom: 13pt;
+  }
+  .eyebrow {
+    font-size: 7.5pt;
+    letter-spacing: 1.2pt;
+    text-transform: uppercase;
+    color: #1f4e79;
+    font-weight: bold;
+    margin: 0 0 3pt;
+  }
+  h1 {
+    margin: 0;
+    font-size: 19pt;
+    line-height: 1.2;
+    color: #11161c;
+  }
+  .meta {
+    text-align: right;
+    font-size: 8pt;
+    color: #5b636e;
+    white-space: nowrap;
+  }
+  .meta strong { display: block; color: #1d232b; font-size: 9pt; }
+
+  /* ---------- Сводка: клиент и тема ---------- */
+  .summary {
+    display: flex;
+    gap: 10pt;
+    margin-bottom: 8pt;
+  }
+  .summary .card { flex: 1; margin-bottom: 0; }
+  .value-lg { font-size: 12pt; font-weight: bold; color: #11161c; line-height: 1.35; }
+
+  /* ---------- Карточки-секции ---------- */
+  .card {
+    border: 0.75pt solid #d9dee5;
+    border-left: 3pt solid #1f4e79;
+    border-radius: 3pt;
+    padding: 8pt 12pt 8pt;
+    margin-bottom: 8pt;
+    background: #ffffff;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .card.muted { background: #f6f8fa; }
+  .label {
+    font-size: 7.5pt;
+    letter-spacing: 0.8pt;
+    text-transform: uppercase;
+    color: #5b636e;
+    font-weight: bold;
+    margin: 0 0 4pt;
+  }
+  .card p { margin: 0; }
+
+  .facts { display: flex; gap: 10pt; }
+  .fact { flex: 1; }
+  .fact + .fact { border-left: 0.75pt solid #d9dee5; padding-left: 10pt; }
+  .fact .sub { font-size: 7.5pt; color: #5b636e; margin-bottom: 2pt; }
+  .fact .value { font-weight: bold; color: #11161c; }
+
+  /* ---------- Списки ---------- */
+  ul.checklist, ol.steps { margin: 2pt 0 0; padding: 0; list-style: none; }
+  ul.checklist li, ol.steps li {
+    position: relative;
+    padding: 2pt 0 2pt 16pt;
+    border-bottom: 0.5pt solid #eceff3;
+  }
+  ul.checklist li:last-child, ol.steps li:last-child { border-bottom: none; }
+  ul.checklist li::before {
+    content: "";
+    position: absolute;
+    left: 2pt;
+    top: 6.5pt;
+    width: 5pt;
+    height: 5pt;
+    background: #1f4e79;
+    border-radius: 1pt;
+  }
+  ol.steps { counter-reset: step; }
+  ol.steps li { counter-increment: step; padding-left: 20pt; }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 2.5pt;
+    width: 12pt;
+    height: 12pt;
+    border-radius: 6pt;
+    background: #1f4e79;
+    color: #ffffff;
+    font-size: 7pt;
+    font-weight: bold;
+    line-height: 12pt;
+    text-align: center;
+  }
+
+  /* ---------- Подвал ---------- */
+  .footer {
+    margin-top: 10pt;
+    padding-top: 6pt;
+    border-top: 0.75pt solid #d9dee5;
+    font-size: 7.5pt;
+    color: #8a8f98;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <p class="eyebrow">AI Client Report Generator</p>
+      <h1>Отчёт по диалогу с клиентом</h1>
+    </div>
+    <div class="meta">
+      Дата формирования
+      <strong>{{ generated_at }}</strong>
+    </div>
+  </header>
+
+  <section class="summary">
+    <div class="card">
+      <p class="label">Клиент</p>
+      <p class="value-lg">{{ report.client_name }}</p>
+    </div>
+    <div class="card">
+      <p class="label">Тема</p>
+      <p class="value-lg">{{ report.topic }}</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="label">Основной запрос</p>
+    <p>{{ report.main_request }}</p>
+  </section>
+
+  <section class="card">
+    <p class="label">Настроение клиента</p>
+    <p>{{ report.mood }}</p>
+  </section>
+
+  <section class="card muted">
+    <p class="label">Сроки и бюджет</p>
+    <div class="facts">
+      <div class="fact">
+        <div class="sub">Сроки</div>
+        <div class="value">{{ report.deadline }}</div>
+      </div>
+      <div class="fact">
+        <div class="sub">Бюджет</div>
+        <div class="value">{{ report.budget }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="label">Ключевые требования</p>
+    <ul class="checklist">
+      {% for item in report.key_requirements %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <p class="label">Следующие шаги</p>
+    <ol class="steps">
+      {% for item in report.next_steps %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <footer class="footer">
+    <span>Сгенерировано AI Client Report Generator</span>
+    <span>{{ generated_at }}</span>
+  </footer>
+
+</body>
+</html>
